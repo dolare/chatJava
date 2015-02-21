@@ -49,7 +49,7 @@ public class ChatClient extends Frame{
 		add(ta1,BorderLayout.NORTH);
 		pack();
 		this.addWindowListener(new WindowAdapter(){
-			public void windowClosing(WindowEvent arg0) {
+			public void windowClosing(WindowEvent arg) {
 				disconnect();
 				System.exit(0);
 			}
