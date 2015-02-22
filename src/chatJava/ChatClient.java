@@ -10,7 +10,8 @@ import java.io.*;
 public class ChatClient extends Frame{
 	Socket soc = null;
 	DataOutputStream dos = null;
-	
+	DataInputStream dis = null;
+	boolean bConnected ;
 	TextField tf1 = new TextField ();
 	
 	TextArea ta1 =  new TextArea();
@@ -27,6 +28,8 @@ public class ChatClient extends Frame{
 		    soc =new Socket("127.0.0.1",8888);
 		    dos = new DataOutputStream(soc.getOutputStream());
 			System.out.println("Clinet has been connected");
+			bConnected = true;
+			dis = new DataInputStream(soc.getInputStream());
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -59,11 +62,12 @@ public class ChatClient extends Frame{
 		setVisible(true);
 		
 		connect();
+		new Thread(new RecThread()).start();
 	}
 	private class TFListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
 			String str = tf1.getText().trim();
-			ta1.setText(str);
+		
 			tf1.setText("");
 			try {
 
@@ -76,4 +80,27 @@ public class ChatClient extends Frame{
 			}
 		}
 	}
+	
+	 private class RecThread implements  Runnable{
+
+		 
+
+		public void run() {
+			while(bConnected){
+				String str;
+				try {
+					str = dis.readUTF();
+					System.out.println(str);
+					ta1.setText(ta1.getText() + str + "\n");
+					
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+			}
+		}
+	}
+	
+		
 }

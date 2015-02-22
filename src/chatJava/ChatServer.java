@@ -1,15 +1,17 @@
 package chatJava;
 import java.awt.*;
+import java.awt.List;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
 import java.io.*;
-
+import java.util.*;
 
 public class ChatServer {
 	ServerSocket ss = null;
 	Socket soc = null;
 	
+	ArrayList<Client> clients = new ArrayList<Client>();
 	
 	public void start(){
 		boolean started = false;
@@ -33,6 +35,8 @@ public class ChatServer {
 				    System.out.println("a client has connected");
 				    
 				    new Thread(c).start();
+				    
+				    clients.add(c);
 				}
 				
 			}
@@ -61,21 +65,28 @@ public class ChatServer {
 		boolean hasConnect ;
 		private Socket soc = null;
 		private DataInputStream dis = null;
+		private DataOutputStream dos = null;
 		public Client(Socket soc){
 			this.soc = soc;
 			try {
 				this.dis = new DataInputStream(soc.getInputStream());
+				this.dos = new  DataOutputStream(soc.getOutputStream());
 				hasConnect = true;
 			} catch (IOException e) {
 	
 				e.printStackTrace();
 			}
 		}
+		
 		public void run() {
 				try {
 					while(hasConnect){
 					String str = dis.readUTF();
 					System.out.println(str);	
+					for(int i = 0; i < clients.size();i++){
+						Client c = clients.get(i);
+						c.send(str);
+					}
 					}
 				} catch (EOFException e) {			
 					System.out.print("clinet has disconnected");
@@ -84,14 +95,33 @@ public class ChatServer {
 					e.printStackTrace();
 				}finally{
 					try{
+						
 						if(dis!=null)dis.close();
+						if(dos!=null)dos.close();
 					}catch (IOException e) {					
 						e.printStackTrace();
 					}	
+					
 				}
 
 			}
+		
+		
+		public void send(String str){
+			
+			try {
+				
+				dos.writeUTF(str);
+				
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+				
+			}
+			
 		}
+		
+	}
 		
 		
 	
