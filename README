@@ -1,1 +1,19 @@
-First proj in java!!!
+First proj in java!!
+
+
+Thread and  Net Programming!
+
+KeyPoint:
+
+Socket and ServerSocket : clinet port and server port.
+
+Port number:25 MSDP 21HTTP for example ,use number larger than 1025 for myself
+
+TCP port number 80 and UDP port number are different.
+
+DataInputStream(s.getInputStream())
+DataOutputStream()  
+
+
+asynchronous >= Thread
+
